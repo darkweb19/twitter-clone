@@ -8,6 +8,8 @@ import { useCallback } from "react";
 import { toast } from "react-hot-toast";
 import { graphqlClient } from "@/clients/api";
 import { verifyUserGoogleTokenQuery } from "@/graphql/queries/user";
+import { userCurrentUser } from "@/hooks/user";
+import Image from "next/image";
 
 interface TwitterSidebarButton {
 	title: string;
@@ -50,6 +52,9 @@ const sidebarMenuItems: TwitterSidebarButton[] = [
 ];
 
 export default function Home() {
+	const { user } = userCurrentUser();
+	// console.log(user);
+
 	const handleLoginWithGoole = useCallback(
 		async (cred: CredentialResponse) => {
 			const googleToken = cred.credential;
@@ -73,7 +78,7 @@ export default function Home() {
 	return (
 		<div>
 			<div className="grid grid-cols-12 gap-3 h-screen w-screen px-32">
-				<div className="col-span-3  mr-20   ">
+				<div className="col-span-3  mr-20 relative ">
 					<div className=" h-fit w-fit text-2xl hover:bg-gray-700 rounded-full p-4 cursor-pointer transition-all">
 						<BsTwitter />
 					</div>
@@ -96,6 +101,22 @@ export default function Home() {
 								Tweet
 							</button>
 						</div>
+
+						<div className="w-52 absolute bottom-5 border flex gap-3 justify-center items-center bg-slate-800 rounded-full ">
+							{user && user.profileImageUrl && (
+								<Image
+									className="rounded-full mt-5"
+									src={user?.profileImageUrl}
+									alt="nothing"
+									height={50}
+									width={50}
+								/>
+							)}
+							<div>
+								<h3 className="text-sm">{user?.firstname}</h3>
+								<h3 className="text-sm">{user?.lastname}</h3>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div className="col-span-6 border-r-[1px] border-l-[1px] h-screen overflow-scroll border-gray-600">
@@ -113,11 +134,14 @@ export default function Home() {
 					<FeedCard />
 				</div>
 				{/* google login button  */}
-				<div className="col-span-3 p-5">
-					<div className=" p-5 bg-slate-700 rounded-lg">
-						<h1 className="my-2 text-2xl">New to Twitter</h1>
-						<GoogleLogin onSuccess={handleLoginWithGoole} />
-					</div>
+
+				<div className="col-span-3 p-5 ">
+					{!user && (
+						<div className=" p-5 bg-slate-700 rounded-lg">
+							<h1 className="my-2 text-2xl">New to Twitter</h1>
+							<GoogleLogin onSuccess={handleLoginWithGoole} />
+						</div>
+					)}
 				</div>
 			</div>
 		</div>

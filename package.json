@@ -10,7 +10,10 @@
     "codegen": "graphql-codegen --config codegen.ts --watch"
   },
   "dependencies": {
+    "@parcel/watcher": "^2.3.0",
     "@react-oauth/google": "^0.11.1",
+    "@tanstack/react-query": "^4.35.0",
+    "@tanstack/react-query-devtools": "^4.35.0",
     "@types/node": "20.5.9",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",

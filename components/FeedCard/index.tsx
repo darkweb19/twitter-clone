@@ -10,6 +10,7 @@ const FeedCard: React.FC = () => {
 			<div className="grid grid-cols-12 gap-3">
 				<div className="col-span-1 ">
 					<Image
+						className="rounded-full"
 						src="https://avatars.githubusercontent.com/u/61812195?v=4"
 						alt="user-image"
 						height={50}

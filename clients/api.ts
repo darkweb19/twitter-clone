@@ -1,4 +1,7 @@
+// import { GraphQLClient } from "graphql-request";
+
 import { GraphQLClient } from "graphql-request";
+
 const isClient = typeof window !== "undefined";
 
 export const graphqlClient = new GraphQLClient(
