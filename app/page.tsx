@@ -1,15 +1,26 @@
 "use client";
 import { BsBell, BsBookmark, BsEnvelope, BsTwitter } from "react-icons/bs";
-import { BiHomeCircle, BiHash, BiUser, BiMoney } from "react-icons/bi";
+import {
+	BiHomeCircle,
+	BiHash,
+	BiUser,
+	BiMoney,
+	BiImageAlt,
+} from "react-icons/bi";
+
+// import "./globals.css";
 import { SlOptions } from "react-icons/sl";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import FeedCard from "@/components/FeedCard";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
 import { graphqlClient } from "@/clients/api";
 import { verifyUserGoogleTokenQuery } from "@/graphql/queries/user";
 import { userCurrentUser } from "@/hooks/user";
 import Image from "next/image";
+import { useCreateTweet, useGetAllTweets } from "@/hooks/tweet";
+import { Tweet } from "@/gql/graphql";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface TwitterSidebarButton {
 	title: string;
@@ -53,7 +64,23 @@ const sidebarMenuItems: TwitterSidebarButton[] = [
 
 export default function Home() {
 	const { user } = userCurrentUser();
-	// console.log(user);
+	const { tweets = [] } = useGetAllTweets();
+	const { mutate } = useCreateTweet();
+
+	const [content, setContent] = useState("");
+
+	const handleCreateTweet = useCallback(() => {
+		mutate({
+			content,
+		});
+	}, [content, mutate]);
+
+	const handleSelectImage = useCallback(() => {
+		const input = document.createElement("input");
+		input.setAttribute("type", "file");
+		input.setAttribute("accept", "image/*");
+		input.click();
+	}, []);
 
 	const handleLoginWithGoole = useCallback(
 		async (cred: CredentialResponse) => {
@@ -66,7 +93,6 @@ export default function Home() {
 					token: googleToken,
 				}
 			);
-
 			toast.success("Verified Success");
 			console.log(verifyGoogleToken);
 			if (verifyGoogleToken)
@@ -102,7 +128,7 @@ export default function Home() {
 							</button>
 						</div>
 
-						<div className="w-52 absolute bottom-5 border flex gap-3 justify-center items-center bg-slate-800 rounded-full ">
+						<div className="w-56 absolute bottom-5 border flex gap-2 justify-center items-center bg-slate-800 rounded-xl">
 							{user && user.profileImageUrl && (
 								<Image
 									className="rounded-full mt-5"
@@ -120,18 +146,51 @@ export default function Home() {
 					</div>
 				</div>
 				<div className="col-span-6 border-r-[1px] border-l-[1px] h-screen overflow-scroll border-gray-600">
-					<FeedCard />
-					<FeedCard />
-					<FeedCard />
-					<FeedCard />
-					<FeedCard />
-					<FeedCard />
-					<FeedCard />
-					<FeedCard />
-					<FeedCard />
-					<FeedCard />
-					<FeedCard />
-					<FeedCard />
+					<div>
+						<div className="border border-r-0 border-l-0 border-b-0 border-gray-600 p-4  hover:bg-slate-900 transition-all cursor-pointer">
+							<div className="grid grid-cols-12 gap-3">
+								<div className="col-span-1 ">
+									{user?.profileImageUrl && (
+										<Image
+											className="rounded-full"
+											src={user?.profileImageUrl}
+											alt="user-image"
+											height={50}
+											width={50}
+										/>
+									)}
+								</div>
+								<div className="col-span-11">
+									<textarea
+										value={content}
+										onChange={(e) =>
+											setContent(e.target.value)
+										}
+										className=" w-full bg-transparent text-xl px-3 border-b border-slate-700   "
+										placeholder="What's happening?"
+										rows={4}
+									></textarea>
+									<div className="mt-2 flex justify-between items-center ">
+										<BiImageAlt
+											onClick={handleSelectImage}
+											className="text-xl"
+										/>
+										<button
+											onClick={handleCreateTweet}
+											className="bg-[#1d9bf0] font-semibold py-1 px-4 text-sm rounded-full "
+										>
+											Tweet
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					{tweets?.map((tweet) =>
+						tweet ? (
+							<FeedCard key={tweet?.id} data={tweet as Tweet} />
+						) : null
+					)}
 				</div>
 				{/* google login button  */}
 
