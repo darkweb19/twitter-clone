@@ -1,14 +1,13 @@
-import { graphqlClient } from "@/clients/api";
-import { getAllTweetsQuery } from "@/graphql/queries/twitter";
 import FeedCard from "./FeedCard";
 import { Tweet } from "@/gql/graphql";
+import { useGetAllTweets } from "@/hooks/tweet";
 
-export default async function GetTweets() {
-	const allTweets = await graphqlClient.request(getAllTweetsQuery);
+export default function GetTweets() {
+	const tweets = useGetAllTweets();
 
 	return (
 		<div>
-			{allTweets.getAllTweets?.map((tweet) =>
+			{tweets.tweets?.map((tweet: any) =>
 				tweet ? <FeedCard data={tweet as Tweet} key={tweet.id} /> : null
 			)}
 		</div>

@@ -1,14 +1,12 @@
 import { BiImageAlt } from "react-icons/bi";
-import FeedCard from "@/components/FeedCard";
 import { useCallback, useState } from "react";
 import { userCurrentUser } from "@/hooks/user";
 import Image from "next/image";
-import { useCreateTweet, useGetAllTweets } from "@/hooks/tweet";
-import { Tweet } from "@/gql/graphql";
+import { useCreateTweet } from "@/hooks/tweet";
 
 export default function Home() {
 	const { user } = userCurrentUser();
-	const { tweets = [] } = useGetAllTweets();
+
 	const { mutate } = useCreateTweet();
 
 	const [content, setContent] = useState("");

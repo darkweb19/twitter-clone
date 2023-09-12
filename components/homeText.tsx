@@ -20,6 +20,7 @@ export default function HomeText({ children }: { children: React.ReactNode }) {
 		mutate({
 			content,
 		});
+		setContent("");
 	}, [content, mutate]);
 
 	return (

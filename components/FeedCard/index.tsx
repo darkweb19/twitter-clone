@@ -10,7 +10,7 @@ interface FeedCardProps {
 	data: Tweet;
 }
 
-const FeedCard: React.FC<FeedCardProps> = (props) => {
+const FeedCard: React.FC<FeedCardProps> = (props: FeedCardProps) => {
 	const { data } = props;
 
 	return (
