@@ -1,6 +1,6 @@
 import { BiImageAlt } from "react-icons/bi";
 import { useCallback, useState } from "react";
-import { userCurrentUser } from "@/hooks/user";
+
 import Image from "next/image";
 import { useCreateTweet } from "@/hooks/tweet";
 
@@ -66,4 +66,7 @@ export default function Home() {
 			</div>
 		</div>
 	);
+}
+function userCurrentUser(): { user: any } {
+	throw new Error("Function not implemented.");
 }

@@ -1,11 +1,11 @@
 import { useCreateTweet } from "@/hooks/tweet";
-import { userCurrentUser } from "@/hooks/user";
+import { useCurrentUser } from "@/hooks/user";
 import Image from "next/image";
 import { useCallback, useState } from "react";
 import { BiImageAlt } from "react-icons/bi";
 
 export default function HomeText({ children }: { children: React.ReactNode }) {
-	const { user } = userCurrentUser();
+	const { user } = useCurrentUser();
 	const { mutate } = useCreateTweet();
 	const [content, setContent] = useState("");
 

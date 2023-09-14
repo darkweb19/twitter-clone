@@ -3,7 +3,7 @@ import Image from "next/image";
 import { BsBell, BsBookmark, BsEnvelope, BsTwitter } from "react-icons/bs";
 import { BiHomeCircle, BiHash, BiUser, BiMoney } from "react-icons/bi";
 import { SlOptions } from "react-icons/sl";
-import { userCurrentUser } from "@/hooks/user";
+import { useCurrentUser } from "@/hooks/user";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import toast from "react-hot-toast";
 import { graphqlClient } from "@/clients/api";
@@ -14,6 +14,7 @@ import Link from "next/link";
 interface TwitterLayoutProps {
 	children: React.ReactNode;
 }
+
 interface TwitterSidebarButton {
 	title: string;
 	icon: React.ReactNode;
@@ -21,7 +22,8 @@ interface TwitterSidebarButton {
 }
 
 const TwitterLayout: React.FC<TwitterLayoutProps> = (props) => {
-	const { user } = userCurrentUser();
+	const { user } = useCurrentUser();
+
 	const queryClient = useQueryClient();
 	const sideBarMenuItems: TwitterSidebarButton[] = useMemo(
 		() => [
@@ -82,6 +84,12 @@ const TwitterLayout: React.FC<TwitterLayoutProps> = (props) => {
 		},
 		[queryClient]
 	);
+	const handleLogout = useCallback(() => {
+		// if (user?.id) toast.error("No user found");
+		window.localStorage.removeItem("twitter_token");
+		toast.success("Logout Sucess");
+	}, [user]);
+
 	return (
 		<div>
 			{" "}
@@ -138,12 +146,21 @@ const TwitterLayout: React.FC<TwitterLayoutProps> = (props) => {
 				</div>
 
 				{/* google login button  */}
+
 				<div className="col-span-0 sm:col-span-3 sm:p-5 ">
 					{!user && (
 						<div className=" sm:block p-5 bg-slate-700 rounded-lg">
 							<h1 className="my-2 sm:text-2xl">New to Twitter</h1>
 							<GoogleLogin onSuccess={handleLoginWithGoole} />
 						</div>
+					)}
+					{user?.id && (
+						<button
+							onClick={handleLogout}
+							className="hidden sm:block bg-[#1d9bf0] font-semibold py-3 px-4 text-lg rounded-full w-full"
+						>
+							Logout
+						</button>
 					)}
 				</div>
 			</div>

@@ -1,5 +1,7 @@
+// "use client";
 import { graphqlClient } from "@/clients/api";
 import FeedCard from "@/components/FeedCard";
+import Follow from "@/components/follow";
 import { Tweet } from "@/gql/graphql";
 import { getUserById } from "@/graphql/queries/user";
 import Image from "next/image";
@@ -8,6 +10,7 @@ import { BsArrowLeftShort } from "react-icons/bs";
 export default async function Page({ params }: { params: { id: string } }) {
 	const id = params.id;
 	const userInfo = await graphqlClient.request(getUserById, { id });
+
 	if (id !== userInfo.getUserById?.id) {
 		return <div>Page not found</div>;
 	} else {
@@ -17,7 +20,8 @@ export default async function Page({ params }: { params: { id: string } }) {
 					<BsArrowLeftShort className="text-4xl" />
 					<div>
 						<h1 className="text-lg font-bold gap-3">
-							Sujan Shrestha
+							{userInfo.getUserById.firstname}{" "}
+							{userInfo.getUserById.lastname}
 						</h1>
 						<h2 className="text-sm font-bold text-slate-500">
 							{userInfo.getUserById?.tweets?.length} Tweets
@@ -36,8 +40,22 @@ export default async function Page({ params }: { params: { id: string } }) {
 					)}
 
 					<h1 className="mt-5 text-lg font-bold gap-3">
-						Sujan Shrestha
+						{userInfo.getUserById.firstname}{" "}
+						{userInfo.getUserById.lastname}
 					</h1>
+					<div className="flex justify-between items-center">
+						<div className="flex gap-4 mt-2 text-sm font-bold text-gray-400">
+							<span>
+								{userInfo.getUserById.followers?.length}{" "}
+								Followers
+							</span>
+							<span>
+								{userInfo.getUserById.following?.length}{" "}
+								Following
+							</span>
+						</div>
+						<Follow id={id} userInfo={userInfo.getUserById} />
+					</div>
 				</div>
 				<div>
 					{userInfo?.getUserById?.tweets?.map((tweet) => (
